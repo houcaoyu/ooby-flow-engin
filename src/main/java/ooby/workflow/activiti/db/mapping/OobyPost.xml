@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ooby.workflow.activiti.entity.OobyPostEntity">
+
+	<!-- POST INSERT -->
+
+	<insert id="insertOobyPost" parameterType="map">
+		insert into
+		${prefix}OOBY_ID_POST (USER_ID_, GROUP_ID_,POST_ID_)
+		values (
+		#{userId ,jdbcType=VARCHAR},
+		#{groupId ,jdbcType=VARCHAR},
+		#{postId ,jdbcType=VARCHAR}
+		)
+	</insert>
+
+
+</mapper>

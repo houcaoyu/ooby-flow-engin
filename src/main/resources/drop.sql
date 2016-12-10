@@ -1,0 +1,1 @@
+drop table OOBY_ID_POST;

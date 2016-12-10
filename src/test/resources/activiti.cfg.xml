@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+		<property name="driverClass" value="org.h2.Driver" />
+		<property name="url"
+			value="jdbc:h2:tcp://localhost/mem:ooby;DB_CLOSE_DELAY=1000" />
+		<property name="username" value="sa" />
+		<property name="password" value="" />
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+		<property name="dataSource" ref="dataSource" />
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="databaseSchemaUpdate" value="create-drop" />
+		<property name="jobExecutorActivate" value="false" />
+
+		<property name="customMybatisMappers">
+			<set>
+				
+			</set>
+		</property>
+		<property name="customMybatisXMLMappers">
+			<set>
+				<value>ooby/workflow/activiti/db/mapping/OobyGroup.xml</value>
+				<value>ooby/workflow/activiti/db/mapping/OobyUser.xml</value>
+				<value>ooby/workflow/activiti/db/mapping/OobyPost.xml</value>
+			</set>
+		</property>
+	</bean>
+
+	<bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+		<property name="processEngineConfiguration" ref="processEngineConfiguration" />
+	</bean>
+
+	<bean id="activitiRule" class="org.activiti.engine.test.ActivitiRule">
+		<property name="processEngine" ref="processEngine" />
+	</bean>
+
+	<bean id="repositoryService" factory-bean="processEngine"
+		factory-method="getRepositoryService" />
+	<bean id="runtimeService" factory-bean="processEngine"
+		factory-method="getRuntimeService" />
+	<bean id="taskService" factory-bean="processEngine"
+		factory-method="getTaskService" />
+	<bean id="historyService" factory-bean="processEngine"
+		factory-method="getHistoryService" />
+	<bean id="managementService" factory-bean="processEngine"
+		factory-method="getManagementService" />
+	<bean id="identityService" factory-bean="processEngine"
+		factory-method="getIdentityService" />
+		
+	<bean id="su" class="ooby.workflow.activiti.scriptutils.impl.ScriptUtilImpl">
+		<property name="obts" ref="oobyTaskService" />
+		<property name="obrs" ref="oobyRuntimeService" />
+		<property name="obis" ref="oobyIdentityService" />
+	</bean>
+	<bean id="oobyTaskService" class="ooby.workflow.activiti.service.impl.OobyTaskServiceImpl">
+		<property name="taskService" ref="taskService" />
+		<property name="repositoryService" ref="repositoryService" />
+		<property name="historyService" ref="historyService" />
+		<property name="obrs" ref="oobyRuntimeService" />
+	</bean>
+	<bean id="oobyIdentityService" class="ooby.workflow.activiti.service.impl.OobyIdentityServiceImpl">
+		<property name="identityService" ref="identityService" />
+		<property name="managementService" ref="managementService" />
+	</bean>
+	<bean id="oobyRuntimeService" class="ooby.workflow.activiti.service.impl.OobyRuntimeServiceImpl">
+		<property name="runtimeService" ref="runtimeService" />
+		<property name="historyService" ref="historyService" />
+	</bean>
+
+</beans>

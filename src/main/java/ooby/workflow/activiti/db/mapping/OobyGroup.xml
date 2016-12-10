@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.GroupEntity">
+
+	<!-- GROUP INSERT -->
+
+	<insert id="insertOobyGroup" parameterType="ooby.workflow.activiti.entity.OobyGroupEntity">
+		insert into
+		${prefix}ACT_ID_GROUP (ID_, REV_, NAME_, TYPE_, PARENT_)
+		values (
+		#{id
+		,jdbcType=VARCHAR},
+		1,
+		#{name ,jdbcType=VARCHAR},
+		#{type
+		,jdbcType=VARCHAR},
+		#{parent ,jdbcType=VARCHAR}
+		)
+	</insert>
+	<resultMap id="oobyGroupResultMap"
+		type="ooby.workflow.activiti.entity.OobyGroupEntity">
+		<id property="id" column="ID_" jdbcType="VARCHAR" />
+		<result property="revision" column="REV_" jdbcType="INTEGER" />
+		<result property="name" column="NAME_" jdbcType="VARCHAR" />
+		<result property="type" column="TYPE_" jdbcType="VARCHAR" />
+		<result property="parent" column="PARENT_" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="getSubGroup" parameterType="string" resultMap="oobyGroupResultMap">
+		select * from ${prefix}ACT_ID_GROUP where PARENT_ =
+		#{parameter,jdbcType=VARCHAR}
+	</select>
+
+	<select id="selectOobyGroup" parameterType="string" resultMap="oobyGroupResultMap">
+		select * from ${prefix}ACT_ID_GROUP where ID_ =
+		#{parameter,jdbcType=VARCHAR}
+	</select>
+	
+	<select id="getDepartmentsOfUser" parameterType="string" resultMap="oobyGroupResultMap">
+		select g.* from ${prefix}ACT_ID_GROUP g,${prefix}OOBY_ID_POST p where p.USER_ID_ =
+		#{parameter,jdbcType=VARCHAR} and g.ID_=p.GROUP_ID_ and g.TYPE_="dep"
+	</select>
+
+</mapper>

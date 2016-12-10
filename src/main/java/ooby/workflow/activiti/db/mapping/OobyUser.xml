@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.UserEntity">
+
+	<select id="getUserByDepPost" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="userResultMap">
+		select u.* from ${prefix}ACT_ID_USER u,${prefix}OOBY_ID_POST p 
+		where p.GROUP_ID_ = #{parameter.groupId}
+			and p.POST_ID_ = #{parameter.postId}
+			and p.USER_ID_ = u.ID_
+	</select>
+	
+	<select id="getUserByPost" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="userResultMap">
+		select distinct u.* from ${prefix}ACT_ID_USER u,${prefix}OOBY_ID_POST p 
+		where p.POST_ID_ = #{parameter}
+			and p.USER_ID_ = u.ID_
+	</select>
+	
+	<select id="getUserInGroupsSameTime" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="userResultMap">
+		select u.* from ${prefix}ACT_ID_MEMBERSHIP a , ${prefix}ACT_ID_MEMBERSHIP b , ${prefix}ACT_ID_USER u
+		where a.GROUP_ID_=#{parameter.groupId1,jdbcType=VARCHAR} 
+		and b.GROUP_ID_ =#{parameter.groupId2,jdbcType=VARCHAR} 
+		and a.USER_ID_=b.USER_ID_
+		and a.USER_ID_=u.ID_
+	</select>
+
+
+</mapper>
